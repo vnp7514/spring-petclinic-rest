@@ -18,6 +18,7 @@ package org.springframework.samples.petclinic.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashSet;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -246,7 +247,7 @@ public class ClinicServiceImpl implements ClinicService {
             return Collections.emptyList();
         }
 
-        List<Pet> pets = new ArrayList<>();
+        HashSet<Pet> pets = new HashSet<>();
         for (Visit visit : visits) {
             pets.add(visit.getPet());
         }
