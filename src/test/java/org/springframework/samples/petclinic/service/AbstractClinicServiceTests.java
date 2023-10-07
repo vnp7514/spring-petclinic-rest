@@ -192,7 +192,6 @@ public abstract class AbstractClinicServiceTests {
         pet7.addVisit(visit);
         visit.setDescription("test");
         visit.setVet(vet);
-        vet.addVisit(visit);
         this.clinicService.saveVisit(visit);
         this.clinicService.saveVet(vet);
         this.clinicService.savePet(pet7);
@@ -264,9 +263,6 @@ public abstract class AbstractClinicServiceTests {
         visit.setDate(new Date());
         visit.setDescription("new visit");
         visit.setVet(vet);
-
-        vet.addVisit(visit);
-
 
         this.clinicService.saveVisit(visit);
         this.clinicService.saveVet(vet);

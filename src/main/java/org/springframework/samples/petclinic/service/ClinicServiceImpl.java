@@ -18,8 +18,7 @@ package org.springframework.samples.petclinic.service;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
-import java.util.Optional;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -239,17 +238,19 @@ public class ClinicServiceImpl implements ClinicService {
     @Override
     @Transactional(readOnly = true)
     public Collection<Pet> findPetsVisitByVet(int vetId) throws DataAccessException {
-        Vet vet = findVetById(vetId);
-        if (vet == null) {
+        List<Visit> visits;
+        try {
+            visits = visitRepository.findByVetId(vetId);
+        } catch (ObjectRetrievalFailureException|EmptyResultDataAccessException e) {
+            // just ignore not found exceptions for Jdbc/Jpa realization
             return Collections.emptyList();
-        } else {
-            Collection<Visit> visits = vet.getVisits();
-            Collection<Pet> pets = new HashSet<>();
-            for (Visit visit : visits) {
-                pets.add(visit.getPet());
-            }
-            return pets;
         }
+
+        List<Pet> pets = new ArrayList<>();
+        for (Visit visit : visits) {
+            pets.add(visit.getPet());
+        }
+        return pets;
     }
 
     @Override

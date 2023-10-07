@@ -101,8 +101,19 @@ public class JdbcVisitRepositoryImpl implements VisitRepository {
 
         return visits;
     }
-    
-	@Override
+
+    @Override
+    public List<Visit> findByVetId(Integer vetId) {
+        Map<String, Object> params = new HashMap<>();
+        params.put("id", vetId);
+        List<Visit> visits = this.namedParameterJdbcTemplate.query(
+            "SELECT id as visit_id, visit_date, description FROM visits WHERE vet_id=:id",
+            params, new JdbcVisitRowMapper());
+
+        return visits;
+    }
+
+    @Override
 	public Visit findById(int id) throws DataAccessException {
 		Visit visit;
 		try {

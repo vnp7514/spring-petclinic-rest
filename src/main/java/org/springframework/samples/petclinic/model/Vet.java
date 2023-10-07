@@ -21,16 +21,13 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
-import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.xml.bind.annotation.XmlElement;
-
 import org.springframework.beans.support.MutableSortDefinition;
 import org.springframework.beans.support.PropertyComparator;
 
@@ -53,9 +50,6 @@ public class Vet extends Person {
         inverseJoinColumns = @JoinColumn(name = "specialty_id"))
     private Set<Specialty> specialties;
 
-    @OneToMany(cascade = CascadeType.ALL, mappedBy = "vet", fetch = FetchType.EAGER)
-    private Set<Visit> visits;
-
     @JsonIgnore
     protected Set<Specialty> getSpecialtiesInternal() {
         if (this.specialties == null) {
@@ -63,42 +57,6 @@ public class Vet extends Person {
         }
         return this.specialties;
     }
-
-    @JsonIgnore
-    protected Set<Visit> getVisitsInternal() {
-        if (this.visits == null) {
-            this.visits = new HashSet<>();
-        }
-        return this.visits;
-    }
-
-    public List<Visit> getVisits() {
-        List<Visit> sortedVisits = new ArrayList<>(getVisitsInternal());
-        PropertyComparator.sort(sortedVisits, new MutableSortDefinition("id", true, false));
-        return Collections.unmodifiableList(sortedVisits);
-    }
-
-    public void addVisit(Visit visit) {
-        getVisitsInternal().add(visit);
-        visit.setVet(this);
-    }
-
-    public Visit getVisit(int id) {
-        return getVisit(id, false);
-    }
-
-    public Visit getVisit(int id, boolean ignoreNew) {
-        for (Visit visit : getVisitsInternal()) {
-            if (!ignoreNew || !visit.isNew()) {
-                int compId = visit.getId();
-                if (compId == id) {
-                    return visit;
-                }
-            }
-        }
-        return null;
-    }
-
     protected void setSpecialtiesInternal(Set<Specialty> specialties) {
         this.specialties = specialties;
     }
