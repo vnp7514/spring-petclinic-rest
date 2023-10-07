@@ -193,7 +193,6 @@ public abstract class AbstractClinicServiceTests {
         visit.setDescription("test");
         visit.setVet(vet);
         this.clinicService.saveVisit(visit);
-        this.clinicService.saveVet(vet);
         this.clinicService.savePet(pet7);
 
         pet7 = this.clinicService.findPetById(7);
@@ -265,7 +264,6 @@ public abstract class AbstractClinicServiceTests {
         visit.setVet(vet);
 
         this.clinicService.saveVisit(visit);
-        this.clinicService.saveVet(vet);
         assertThat(visit.getId().longValue()).isNotEqualTo(0);
 
         visits = this.clinicService.findAllVisits();
