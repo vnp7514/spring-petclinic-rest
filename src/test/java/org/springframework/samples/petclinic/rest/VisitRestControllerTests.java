@@ -40,6 +40,7 @@ import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.ApplicationTestConfig;
 import org.springframework.samples.petclinic.service.ClinicService;
@@ -99,10 +100,16 @@ public class VisitRestControllerTests {
     	pet.setOwner(owner);
     	pet.setType(petType);
 
+        Vet vet = new Vet();
+        vet.setId(1);
+        vet.setFirstName("James");
+        vet.setLastName("Carter");
+
 
     	Visit visit = new Visit();
     	visit.setId(2);
     	visit.setPet(pet);
+        visit.setVet(vet);
     	visit.setDate(new Date());
     	visit.setDescription("rabies shot");
     	visits.add(visit);
@@ -110,6 +117,7 @@ public class VisitRestControllerTests {
     	visit = new Visit();
     	visit.setId(3);
     	visit.setPet(pet);
+        visit.setVet(vet);
     	visit.setDate(new Date());
     	visit.setDescription("neutered");
     	visits.add(visit);
@@ -145,8 +153,11 @@ public class VisitRestControllerTests {
             .andExpect(content().contentType("application/json;charset=UTF-8"))
         	.andExpect(jsonPath("$.[0].id").value(2))
         	.andExpect(jsonPath("$.[0].description").value("rabies shot"))
+            .andExpect(jsonPath("$.[0].vet.id").value(1))
         	.andExpect(jsonPath("$.[1].id").value(3))
-        	.andExpect(jsonPath("$.[1].description").value("neutered"));
+        	.andExpect(jsonPath("$.[1].description").value("neutered"))
+            .andExpect(jsonPath("$.[1].vet.id").value(1));
+
     }
 
     @Test

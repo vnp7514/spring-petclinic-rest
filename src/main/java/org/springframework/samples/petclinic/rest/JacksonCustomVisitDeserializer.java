@@ -22,6 +22,7 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import org.springframework.samples.petclinic.model.Pet;
+import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 
 import com.fasterxml.jackson.core.JsonParser;
@@ -72,6 +73,10 @@ public class JacksonCustomVisitDeserializer extends StdDeserializer<Visit> {
 		visit.setDate(visitDate);
 		visit.setDescription(description);
 		visit.setPet(pet);
+
+        JsonNode vet_node = node.get("vet");
+        Vet vet = mapper.treeToValue(vet_node, Vet.class);
+        visit.setVet(vet);
 		return visit;
 	}
 
