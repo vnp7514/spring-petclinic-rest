@@ -188,11 +188,11 @@ public class JdbcVisitRepositoryImpl implements VisitRepository {
 					BeanPropertyRowMapper.newInstance(Owner.class));
 			pet.setOwner(owner);
 			visit.setPet(pet);
-            params.clear();
-            params.put("id", rs.getInt("vets_id"));
+            Map<String, Object> paramsForVet = new HashMap<>();
+            paramsForVet.put("id", rs.getInt("vets_id"));
             Vet vet = JdbcVisitRepositoryImpl.this.namedParameterJdbcTemplate.queryForObject(
-                "SELECT vets.id as vets_id, first_name, last_name FROM vets WHERE vets.id=:id",
-                params,
+                "SELECT id, first_name, last_name FROM vets WHERE id=:id",
+                paramsForVet,
                 BeanPropertyRowMapper.newInstance(Vet.class));
             visit.setVet(vet);
 			return visit;
