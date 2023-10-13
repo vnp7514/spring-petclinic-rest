@@ -16,6 +16,9 @@
 package org.springframework.samples.petclinic.service;
 
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
+import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cache.annotation.Cacheable;
@@ -67,7 +70,7 @@ public class ClinicServiceImpl implements ClinicService {
         this.vetRepository = vetRepository;
         this.ownerRepository = ownerRepository;
         this.visitRepository = visitRepository;
-        this.specialtyRepository = specialtyRepository; 
+        this.specialtyRepository = specialtyRepository;
 		this.petTypeRepository = petTypeRepository;
     }
 
@@ -245,18 +248,45 @@ public class ClinicServiceImpl implements ClinicService {
 		return pet;
 	}
 
-	@Override
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Pet> findPetByOwnerId(int id) throws DataAccessException {
+        Owner owner = findOwnerById(id);
+        if (owner == null || owner.getPets() == null) {
+            return Collections.emptyList();
+        }
+        return owner.getPets();
+    }
+
+    @Override
+    @Transactional(readOnly = true)
+    public Collection<Pet> findPetVisitedByVet(int id) throws DataAccessException {
+        List<Visit> visits;
+        try {
+            visits = visitRepository.findByVetId(id);
+        } catch (ObjectRetrievalFailureException|EmptyResultDataAccessException e) {
+            // just ignore not found exceptions for Jdbc/Jpa realization
+            return Collections.emptyList();
+        }
+        HashSet<Pet> pets = new HashSet<>();
+        for (Visit visit: visits) {
+            pets.add(visit.getPet());
+        }
+        return pets;
+    }
+
+    @Override
 	@Transactional
 	public void savePet(Pet pet) throws DataAccessException {
 		petRepository.save(pet);
-		
+
 	}
 
 	@Override
 	@Transactional
 	public void saveVisit(Visit visit) throws DataAccessException {
 		visitRepository.save(visit);
-		
+
 	}
 
 	@Override
@@ -270,7 +300,7 @@ public class ClinicServiceImpl implements ClinicService {
 	@Transactional
 	public void saveOwner(Owner owner) throws DataAccessException {
 		ownerRepository.save(owner);
-		
+
 	}
 
 	@Override
@@ -284,8 +314,8 @@ public class ClinicServiceImpl implements ClinicService {
 	public Collection<Visit> findVisitsByPetId(int petId) {
 		return visitRepository.findByPetId(petId);
 	}
-	
-	
+
+
 
 
 }

@@ -23,6 +23,7 @@ import java.text.SimpleDateFormat;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 
 import com.fasterxml.jackson.core.JsonGenerator;
@@ -93,6 +94,17 @@ public class JacksonCustomVisitSerializer extends StdSerializer<Visit> {
 		jgen.writeStringField("telephone", owner.getTelephone());
 		jgen.writeEndObject(); // owner
 		jgen.writeEndObject(); // pet
+
+        Vet vet = visit.getVet();
+        jgen.writeObjectFieldStart("vet");
+        if (vet.getId() == null) {
+            jgen.writeNullField("id");
+        } else {
+            jgen.writeNumberField("id", vet.getId());
+        }
+        jgen.writeStringField("first_name", vet.getFirstName());
+        jgen.writeStringField("last_name", vet.getLastName());
+        jgen.writeEndObject(); // vet
 		jgen.writeEndObject(); // visit
 	}
 
