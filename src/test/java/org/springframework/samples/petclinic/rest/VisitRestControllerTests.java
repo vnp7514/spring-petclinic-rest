@@ -40,6 +40,7 @@ import org.springframework.http.MediaType;
 import org.springframework.samples.petclinic.model.Owner;
 import org.springframework.samples.petclinic.model.Pet;
 import org.springframework.samples.petclinic.model.PetType;
+import org.springframework.samples.petclinic.model.Vet;
 import org.springframework.samples.petclinic.model.Visit;
 import org.springframework.samples.petclinic.service.ApplicationTestConfig;
 import org.springframework.samples.petclinic.service.ClinicService;
@@ -98,6 +99,10 @@ public class VisitRestControllerTests {
     	pet.setBirthDate(new Date());
     	pet.setOwner(owner);
     	pet.setType(petType);
+        Vet vet = new Vet();
+        vet.setId(1);
+        vet.setFirstName("James");
+        vet.setLastName("Carter");
 
 
     	Visit visit = new Visit();
@@ -105,12 +110,14 @@ public class VisitRestControllerTests {
     	visit.setPet(pet);
     	visit.setDate(new Date());
     	visit.setDescription("rabies shot");
+        visit.setVet(vet);
     	visits.add(visit);
 
     	visit = new Visit();
     	visit.setId(3);
     	visit.setPet(pet);
     	visit.setDate(new Date());
+        visit.setVet(vet);
     	visit.setDescription("neutered");
     	visits.add(visit);
 

@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.rest;
 
 import java.util.Collection;
+import java.util.List;
 
 import javax.transaction.Transactional;
 import javax.validation.Valid;
@@ -59,6 +60,24 @@ public class PetRestController {
 		}
 		return new ResponseEntity<Pet>(pet, HttpStatus.OK);
 	}
+
+    @RequestMapping(value = "/owner/{ownerId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Collection<Pet>> getPetByOwnerId(@PathVariable("ownerId") int ownerId){
+        Collection<Pet> pet = this.clinicService.findPetByOwnerId(ownerId);
+        if(pet.isEmpty()){
+            return new ResponseEntity<Collection<Pet>>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Collection<Pet>>(pet, HttpStatus.OK);
+    }
+
+    @RequestMapping(value = "/vet/{vetId}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
+    public ResponseEntity<Collection<Pet>> getPetVisitedByVetId(@PathVariable("vetId") int vetId){
+        Collection<Pet> pet = this.clinicService.findPetVisitedByVet(vetId);
+        if(pet.isEmpty()){
+            return new ResponseEntity<Collection<Pet>>(HttpStatus.NOT_FOUND);
+        }
+        return new ResponseEntity<Collection<Pet>>(pet, HttpStatus.OK);
+    }
 
 	@RequestMapping(value = "", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_UTF8_VALUE)
 	public ResponseEntity<Collection<Pet>> getPets(){
