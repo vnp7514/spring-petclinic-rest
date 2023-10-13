@@ -17,6 +17,7 @@
 package org.springframework.samples.petclinic.rest;
 
 import static org.mockito.BDDMockito.given;
+import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -146,6 +147,48 @@ public class PetRestControllerTests {
     	given(this.clinicService.findAllPets()).willReturn(pets);
         this.mockMvc.perform(get("/api/pets/")
         	.accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetPetByOwnerId_Success() throws Exception {
+        when(this.clinicService.findPetsByOwnerId(1)).thenReturn(pets);
+        this.mockMvc.perform(get("/api/pets/owner/1")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType("application/json;charset=UTF-8"))
+            .andExpect(jsonPath("$.[0].id").value(3))
+            .andExpect(jsonPath("$.[0].name").value("Rosy"))
+            .andExpect(jsonPath("$.[1].id").value(4))
+            .andExpect(jsonPath("$.[1].name").value("Jewel"));
+    }
+
+    @Test
+    public void testGetPetByOwnerId_NotFound() throws Exception {
+        pets.clear();
+        when(this.clinicService.findPetsByOwnerId(1)).thenReturn(pets);
+        this.mockMvc.perform(get("/api/pets/owner/1")
+            .accept(MediaType.APPLICATION_JSON))
+            .andExpect(status().isNotFound());
+    }
+
+    @Test
+    public void testGetPetByVetId_Success() throws Exception {
+        when(this.clinicService.findPetsVisitByVet(1)).thenReturn(pets);
+        this.mockMvc.perform(get("/api/pets/vet/1")
+                .accept(MediaType.APPLICATION_JSON))
+            .andExpect(content().contentType("application/json;charset=UTF-8"))
+            .andExpect(jsonPath("$.[0].id").value(3))
+            .andExpect(jsonPath("$.[0].name").value("Rosy"))
+            .andExpect(jsonPath("$.[1].id").value(4))
+            .andExpect(jsonPath("$.[1].name").value("Jewel"));
+    }
+
+    @Test
+    public void testGetPetByVetId_NotFound() throws Exception {
+        pets.clear();
+        when(this.clinicService.findPetsVisitByVet(1)).thenReturn(pets);
+        this.mockMvc.perform(get("/api/pets/vet/1")
+            .accept(MediaType.APPLICATION_JSON))
             .andExpect(status().isNotFound());
     }
 
